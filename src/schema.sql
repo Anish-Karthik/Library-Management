@@ -19,23 +19,14 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    Member (
+    User (
         id INT PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(100) NOT NULL,
         username VARCHAR(100) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL, -- Store hashed password
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    );
-
-CREATE TABLE
-    Admin (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(100) NOT NULL,
-        username VARCHAR(100) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL, -- Store hashed password
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        role Enum ('ADMIN', 'MEMBER') DEFAULT 'MEMBER'
     );
 
 CREATE TABLE
@@ -46,5 +37,5 @@ CREATE TABLE
         borrowed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         returned_at TIMESTAMP,
         FOREIGN KEY (book_id) REFERENCES Book (id),
-        FOREIGN KEY (member_id) REFERENCES Member (id)
+        FOREIGN KEY (member_id) REFERENCES User (id)
     );

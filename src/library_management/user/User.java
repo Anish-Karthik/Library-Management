@@ -2,11 +2,34 @@ package library_management.user;
 
 import java.time.LocalDateTime;
 
-public abstract class User {
+public class User {
+    public static enum Role {
+        ADMIN, MEMBER
+    }
+
     private int id;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Role role;
+    private String username;
+    private String password;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     // Getters and Setters
     public int getId() {
@@ -29,6 +52,10 @@ public abstract class User {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -36,19 +63,12 @@ public abstract class User {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
-
-
-// public class User {
-//   String id;
-//   String name;
-//   String email;
-//   String password;
-  // String address;
-  // String phone;
-  // String role;
-  // Book[] borrowedBooks;
-// }
