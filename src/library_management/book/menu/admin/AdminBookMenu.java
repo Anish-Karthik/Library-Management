@@ -4,11 +4,18 @@ import java.sql.Connection;
 
 import library_management.book.Book;
 import library_management.book.menu.BookSearchMenu;
+import library_management.user.User;
 
 public class AdminBookMenu extends BookSearchMenu {
 
-  public AdminBookMenu(Connection con) {
-    super(con);
+  public AdminBookMenu(Connection con, User user) {
+    super(con, user);
+    if (user == null) {
+      throw new IllegalArgumentException("You are unauthenticated");
+    }
+    if (user.getRole() != User.Role.ADMIN) {
+      throw new IllegalArgumentException("You are not authorized to access admin menu");
+    }
   }
 
   public void showMenu() {
@@ -17,7 +24,7 @@ public class AdminBookMenu extends BookSearchMenu {
     System.out.println("2. Update Book");
     System.out.println("3. Delete Book");
     System.out.println("4. Search Book");
-    System.out.println("5. Show All Books");
+    System.out.println("5. Show all Books");
     System.out.println("6. Exit");
   }
 

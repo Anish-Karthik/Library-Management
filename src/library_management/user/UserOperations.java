@@ -37,12 +37,14 @@ public class UserOperations {
 
       st.setString(1, user.getName());
       st.setString(2, user.getUsername());
-      st.setString(3, user.getPassword());
+      st.setString(3, Hash.hashString(user.getPassword()));
       st.setString(4, user.getRole().toString());
       st.executeUpdate();
 
     } catch (SQLException e) {
       System.out.println("USER:Error adding user");
+      e.printStackTrace();
+    } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
   }
@@ -92,7 +94,7 @@ public class UserOperations {
     addUser(user);
   }
 
-  public void loginUser(String username, String password) {
+  public User loginUser(String username, String password) {
     // Check if the user exists in the database
     // If the user exists, set the currentUser to the user
     // If the user does not exist, throw an exception
@@ -101,7 +103,17 @@ public class UserOperations {
       st = con.prepareStatement("select * from User where username=? and password=?");
       st.setString(1, username);
       st.setString(2, Hash.hashString(password));
-      st.executeQuery();
+      ResultSet rs = st.executeQuery();
+      if (rs.next()) {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setName(rs.getString("name"));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+        user.setRole(User.Role.valueOf(rs.getString("role")));
+        currentUser = user;
+        return user;
+      }
     } catch (SQLException e) {
       System.out.println("USER:Error logging in user");
       e.printStackTrace();
@@ -109,6 +121,7 @@ public class UserOperations {
       System.out.println("USER:Error hashing password");
       e.printStackTrace();
     }
+    return null;
   }
 
   public ArrayList<User> getUsers() {

@@ -6,8 +6,14 @@ import java.util.ArrayList;
 import library_management.user.User;
 
 public class AdminManageUserMenu extends DisplayUserMenu {
-  public AdminManageUserMenu(Connection con) {
+  public AdminManageUserMenu(Connection con, User user) {
     super(con);
+    if (user == null) {
+      throw new IllegalArgumentException("You are unauthenticated");
+    }
+    if (user.getRole() != User.Role.ADMIN) {
+      throw new IllegalArgumentException("You are not authorized to access admin menu");
+    }
   }
 
   public void showMenu() {
@@ -16,7 +22,7 @@ public class AdminManageUserMenu extends DisplayUserMenu {
     System.out.println("2. Update User");
     System.out.println("3. Delete User");
     System.out.println("4. Search User");
-    System.out.println("5. Show All Users");
+    System.out.println("5. Show all Users");
     System.out.println("6. Show all admins");
     System.out.println("7. Show all members");
     System.out.println("8. Exit");
@@ -130,7 +136,7 @@ public class AdminManageUserMenu extends DisplayUserMenu {
     }
     user.setPassword(password);
 
-    System.out.println("Enter role (ADMIN or MEMBER):");
+    System.out.print("Enter role (ADMIN or MEMBER):");
     String role = scanner.nextLine().toUpperCase();
     while (!role.equals("ADMIN") && !role.equals("MEMBER")) {
       System.out.println("Role must be either ADMIN or MEMBER. Please enter again:");

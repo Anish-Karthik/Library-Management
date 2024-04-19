@@ -7,11 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import library_management.book.Book;
+import library_management.user.User;
 
 public class BookOperations {
   private Connection con;
 
-  BookOperations(Connection con) {
+  BookOperations(Connection con, User user) {
+    if (user == null) {
+      throw new IllegalArgumentException("You are unauthenticated");
+    }
     this.con = con;
   }
 

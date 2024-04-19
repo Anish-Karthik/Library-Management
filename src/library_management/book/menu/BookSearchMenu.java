@@ -4,11 +4,15 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import library_management.book.Book;
+import library_management.user.User;
 
 public class BookSearchMenu extends DisplayBookMenu {
 
-  public BookSearchMenu(Connection con) {
-    super(con);
+  public BookSearchMenu(Connection con, User user) {
+    super(con, user);
+    if (user == null) {
+      throw new IllegalArgumentException("You are unauthenticated");
+    }
   }
 
   public void searchMenu() {

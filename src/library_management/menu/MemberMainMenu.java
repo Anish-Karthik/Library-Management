@@ -3,32 +3,28 @@ package library_management.menu;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import library_management.book.menu.admin.AdminBookMenu;
+import library_management.book.menu.member.MemberBookMenu;
 import library_management.user.User;
-import library_management.user.menu.admin.AdminManageUserMenu;
 
-public class AdminMainMenu {
-  private AdminBookMenu bookMenu;
-  private AdminManageUserMenu userMenu;
+public class MemberMainMenu {
+  private MemberBookMenu bookMenu;
   private Scanner scanner;
 
-  public AdminMainMenu(Connection con, User user) {
+  public MemberMainMenu(Connection con, User user) {
     if (user == null) {
       throw new IllegalArgumentException("You are unauthenticated");
     }
-    if(user.getRole() != User.Role.ADMIN) {
-      throw new IllegalArgumentException("You are not authorized to access admin menu");
+    if (user.getRole() != User.Role.MEMBER) {
+      throw new IllegalArgumentException("You are not authorized to access member menu");
     }
     scanner = new Scanner(System.in);
-    bookMenu = new AdminBookMenu(con, user);
-    userMenu = new AdminManageUserMenu(con, user);
+    bookMenu = new MemberBookMenu(con, user);
   }
 
   public void displayMainMenu() {
     System.out.println("----------------------------------------------------");
     System.out.println("1. Book Menu");
-    System.out.println("2. User Menu");
-    System.out.println("3. Exit");
+    System.out.println("2. Exit");
     System.out.println("----------------------------------------------------");
   }
 
@@ -44,14 +40,11 @@ public class AdminMainMenu {
           bookMenu.processMenu();
           break;
         case 2:
-          userMenu.processMenu();
-          break;
-        case 3:
           System.out.println("Exiting...");
           break;
         default:
           System.out.println("Invalid choice");
       }
-    } while (choice != 3);
+    } while (choice != 2);
   }
 }

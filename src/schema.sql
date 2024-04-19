@@ -29,6 +29,7 @@ CREATE TABLE
         role Enum ('ADMIN', 'MEMBER') DEFAULT 'MEMBER'
     );
 
+DROP TABLE if exists Borrowing;
 CREATE TABLE
     Borrowing (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -36,6 +37,20 @@ CREATE TABLE
         member_id INT,
         borrowed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         returned_at TIMESTAMP,
-        FOREIGN KEY (book_id) REFERENCES Book (id),
-        FOREIGN KEY (member_id) REFERENCES User (id)
+        CONSTRAINT FK_book_id FOREIGN KEY (book_id) REFERENCES Book (id),
+        CONSTRAINT FK_member_id FOREIGN KEY (member_id) REFERENCES User (id)
     );
+
+-- Create a trigger to check if the same book is borrowed by the same member and not returned yet
+DELIMITER //
+CREATE TRIGGER check_before_borrow
+BEFORE INSERT ON Borrowing
+FOR EACH ROW
+BEGIN
+    DECLARE borrow_count INT;
+    SELECT COUNT(*) INTO borrow_count FROM Borrowing WHERE book_id = NEW.book_id AND member_id = NEW.member_id AND returned_at IS NULL;
+    IF borrow_count > 0 THEN 
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot borrow the same book that is not returned yet.';
+    END IF;
+END;//
+DELIMITER ;

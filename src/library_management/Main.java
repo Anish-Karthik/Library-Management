@@ -1,12 +1,12 @@
 package library_management;
 
-import library_management.menu.AdminMainMenu;
+import library_management.menu.UserMainMenu;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
 		DB db = DB.getInstance();
-		AdminMainMenu adminMainMenu = new AdminMainMenu(db.con);
-		adminMainMenu.processMenu();
+		UserMainMenu mainMenu = new UserMainMenu(db.con);
+		mainMenu.processMenu();
 		db.con.close();
 	}
 }

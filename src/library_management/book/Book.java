@@ -1,9 +1,7 @@
 package library_management.book;
 import java.time.LocalDateTime;
 
-enum Status {
-	AVAILABLE, BORROWED, LOST
-}
+
 public class Book {
 	private int id;
 	private String isbn;
