@@ -1,14 +1,14 @@
 package library_management.user;
 
-import library_management.book.Book;
+import library_management.book.BorrowedBook;
 
 public class Member extends User {
-  private Book[] borrowedBooks;
-  public Book[] getBorrowedBooks() {
+  private BorrowedBook[] borrowedBooks;
+  public BorrowedBook[] getBorrowedBooks() {
     return borrowedBooks;
   }
 
-  public void setBorrowedBooks(Book[] borrowedBooks) {
+  public void setBorrowedBooks(BorrowedBook[] borrowedBooks) {
     this.borrowedBooks = borrowedBooks;
   }
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import library_management.book.BorrowedBook;
 import library_management.book.menu.BookSearchMenu;
 import library_management.book.menu.BorrowBookOperations;
+import library_management.format.Color;
+import library_management.format.Format;
 import library_management.user.User;
 
 public class MemberBookMenu extends BookSearchMenu {
@@ -23,23 +25,22 @@ public class MemberBookMenu extends BookSearchMenu {
   }
 
   public void showMenu() {
-    System.out.println("Member Book Menu");
-    System.out.println("1. Search Book");
-    System.out.println("2. Show all Books");
-    System.out.println("3. Borrow Book");
-    System.out.println("4. Return Book");
-    System.out.println("5. Show Borrowed Books");
-    System.out.println("6. Show Borrow History");
-    System.out.println("7. Exit");
+    String[] options = { "Search Book", "Show all Books", "Borrow Book", "Return Book", "Show Borrowed Books",
+        "Show Borrow History", "Exit" };
+    Format.displayMenu("Member Book Menu", options);
   }
 
   public void processMenu() {
     int choice;
     do {
       showMenu();
-      System.out.print("Enter your choice:");
-      choice = scanner.nextInt();
-      scanner.nextLine();
+      System.out.print(Format.colorString("Enter your choice: ", Color.ANSI_BOLD_HIGH_INTENSITY_CYAN));
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (Exception e) {
+        choice = -1;
+      }
+
       switch (choice) {
         case 1:
           processSearchMenu();
@@ -60,38 +61,52 @@ public class MemberBookMenu extends BookSearchMenu {
           showBorrowHistory();
           break;
         case 7:
-          System.out.println("Back to main menu...");
+          Format.exitWithAnimate("Back to main menu");
           break;
         default:
-          System.out.println("Invalid choice");
+          System.out.println(Format.colorString("Invalid choice", Color.ANSI_HIGH_INTENSITY_RED));
       }
     } while (choice != 7);
   }
 
   public void borrowBook() {
-    System.out.println("Borrow Book");
-    System.out.print("Enter book id:");
-    int bookId = scanner.nextInt();
-    scanner.nextLine();
-    bookOperations.borrowBook(bookId);
+    displayAllBooks();
+    System.out.println(Format.surroundStringWithBox("Borrow Book", 40, Color.ANSI_UNDERLINE_BLUE,
+        Color.ANSI_BOLD_HIGH_INTENSITY_BLACK));
+    System.out.print(Format.colorString("Enter book id: ", Color.ANSI_HIGH_INTENSITY_BLACK));
+    try {
+      int bookId = scanner.nextInt();
+      scanner.nextLine();
+      bookOperations.borrowBook(bookId);
+    } catch (Exception e) {
+      System.out.println(Format.colorString("Invalid id or operation failed", Color.ANSI_HIGH_INTENSITY_RED));
+    }
   }
 
   public void returnBook() {
-    System.out.println("Return Book");
-    System.out.print("Enter book id:");
-    int bookId = scanner.nextInt();
-    scanner.nextLine();
-    bookOperations.returnBook(bookId);
+    displayBorrowedBooks(bookOperations.getAllMyBorrowedBook());
+    System.out.println(Format.surroundStringWithBox("Return Book", 40, Color.ANSI_UNDERLINE_BLUE,
+        Color.ANSI_BOLD_HIGH_INTENSITY_BLACK));
+    System.out.print(Format.colorString("Enter book id: ", Color.ANSI_HIGH_INTENSITY_BLACK));
+    try {
+      int bookId = scanner.nextInt();
+      scanner.nextLine();
+      bookOperations.returnBook(bookId);
+    } catch (Exception e) {
+      System.out.println(Format.colorString("Invalid id or operation failed", Color.ANSI_HIGH_INTENSITY_RED));
+    }
   }
 
   public void showBorrowedBooks() {
-    System.out.println("Borrowed Books");
+    System.out.println(Format.surroundStringWithBox("Borrowed Books", 40, Color.ANSI_UNDERLINE_BLUE,
+        Color.ANSI_BOLD_HIGH_INTENSITY_BLACK));
     ArrayList<BorrowedBook> borrowedBooks = bookOperations.getAllMyBorrowedBook();
     displayBorrowedBooks(borrowedBooks);
   }
 
   public void showBorrowHistory() {
-    System.out.println("Borrow History");
+    System.out.println(Format.surroundStringWithBox("Borrow History", 40, Color.ANSI_UNDERLINE_BLUE,
+        Color.ANSI_BOLD_HIGH_INTENSITY_BLACK));
     ArrayList<BorrowedBook> borrowedBooks = bookOperations.getBorrowHistory();
     displayBorrowedBooks(borrowedBooks);
   }

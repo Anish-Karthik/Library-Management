@@ -3,6 +3,8 @@ package library_management.user.menu.admin;
 import java.sql.Connection;
 import java.util.ArrayList;
 
+import library_management.format.Color;
+import library_management.format.Format;
 import library_management.user.User;
 
 public class AdminManageUserMenu extends DisplayUserMenu {
@@ -17,24 +19,22 @@ public class AdminManageUserMenu extends DisplayUserMenu {
   }
 
   public void showMenu() {
-    System.out.println("Admin User Menu");
-    System.out.println("1. Add User");
-    System.out.println("2. Update User");
-    System.out.println("3. Delete User");
-    System.out.println("4. Search User");
-    System.out.println("5. Show all Users");
-    System.out.println("6. Show all admins");
-    System.out.println("7. Show all members");
-    System.out.println("8. Exit");
+    String[] options = { "Add User", "Update User", "Delete User", "Search User", "Show all Users", "Show all admins",
+        "Show all members", "Exit" };
+    Format.displayMenu("Admin User Menu", options);
   }
 
   public void processMenu() {
     int choice;
     do {
       showMenu();
-      System.out.print("Enter your choice:");
-      choice = scanner.nextInt();
-      scanner.nextLine();
+      System.out.print(Format.colorString("Enter your choice: ", Color.ANSI_BOLD_HIGH_INTENSITY_CYAN));
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (Exception e) {
+        choice = -1;
+      }
+
       switch (choice) {
         case 1:
           addUser();
@@ -58,10 +58,10 @@ public class AdminManageUserMenu extends DisplayUserMenu {
           displayUsers(User.Role.MEMBER);
           break;
         case 8:
-          System.out.println("Back to main menu...");
+          Format.exitWithAnimate("Back to main menu");
           break;
         default:
-          System.out.println("Invalid choice");
+          System.out.println(Format.colorString("Invalid choice", Color.ANSI_HIGH_INTENSITY_RED));
       }
     } while (choice != 8);
   }
@@ -69,34 +69,38 @@ public class AdminManageUserMenu extends DisplayUserMenu {
   public void addUser() {
     // Add user to the database
     User user = new User();
-    System.out.print("Enter name:");
+    System.out.print(Format.colorString("Enter name: ", Color.ANSI_HIGH_INTENSITY_BLACK));
     String name = scanner.nextLine();
     while (name.isEmpty()) {
-      System.out.println("Name cannot be empty. Please enter again:");
+      System.out
+          .println(Format.colorString("Name cannot be empty. Please enter again: ", Color.ANSI_HIGH_INTENSITY_RED));
       name = scanner.nextLine();
     }
     user.setName(name);
 
-    System.out.print("Enter username:");
+    System.out.print(Format.colorString("Enter username: ", Color.ANSI_HIGH_INTENSITY_BLACK));
     String username = scanner.nextLine();
     while (username.isEmpty()) {
-      System.out.println("Username cannot be empty. Please enter again:");
+      System.out
+          .println(Format.colorString("Username cannot be empty. Please enter again: ", Color.ANSI_HIGH_INTENSITY_RED));
       username = scanner.nextLine();
     }
     user.setUsername(username);
 
-    System.out.print("Enter password:");
+    System.out.print(Format.colorString("Enter password: ", Color.ANSI_HIGH_INTENSITY_BLACK));
     String password = scanner.nextLine();
     while (password.isEmpty()) {
-      System.out.println("Password cannot be empty. Please enter again:");
+      System.out
+          .println(Format.colorString("Password cannot be empty. Please enter again: ", Color.ANSI_HIGH_INTENSITY_RED));
       password = scanner.nextLine();
     }
     user.setPassword(password);
 
-    System.out.print("Enter role (ADMIN or MEMBER):");
+    System.out.print(Format.colorString("Enter role (ADMIN or MEMBER): ", Color.ANSI_HIGH_INTENSITY_BLACK));
     String role = scanner.nextLine().toUpperCase();
     while (!role.equals("ADMIN") && !role.equals("MEMBER")) {
-      System.out.println("Role must be either ADMIN or MEMBER. Please enter again:");
+      System.out.println(Format.colorString("Role must be either ADMIN or MEMBER. Please enter again: ",
+          Color.ANSI_HIGH_INTENSITY_RED));
       role = scanner.nextLine().toUpperCase();
     }
     user.setRole(User.Role.valueOf(role));
@@ -106,57 +110,61 @@ public class AdminManageUserMenu extends DisplayUserMenu {
 
   public void updateUser() {
     // Update user in the database
-    User user = new User();
-    System.out.print("Enter user id to update:");
-    int id = scanner.nextInt();
-    scanner.nextLine();
-    user.setId(id);
+    displayAllUsers();
+    System.out.print(Format.colorString("Enter user id to update: ", Color.ANSI_HIGH_INTENSITY_BLACK));
+    try {
+      int id = scanner.nextInt();
+      scanner.nextLine();
+      User user = userOps.getUser(id);
 
-    System.out.print("Enter name:");
-    String name = scanner.nextLine();
-    while (name.isEmpty()) {
-      System.out.println("Name cannot be empty. Please enter again:");
-      name = scanner.nextLine();
+      System.out.print(Format.colorString("Enter name (" + user.getName() + "): ", Color.ANSI_HIGH_INTENSITY_BLACK));
+      String name = scanner.nextLine();
+      if (!name.isEmpty()) {
+        user.setName(name);
+      }
+
+      System.out
+          .print(Format.colorString("Enter username (" + user.getUsername() + "): ", Color.ANSI_HIGH_INTENSITY_BLACK));
+      String username = scanner.nextLine();
+      if (!username.isEmpty()) {
+        user.setUsername(username);
+      }
+
+      System.out.print(Format.colorString("Enter password: ", Color.ANSI_HIGH_INTENSITY_BLACK));
+      String password = scanner.nextLine();
+      if (!password.isEmpty()) {
+        user.setPassword(password);
+      }
+
+      System.out.print(
+          Format.colorString("Enter role (ADMIN or MEMBER) (" + user.getRole() + "): ",
+              Color.ANSI_HIGH_INTENSITY_BLACK));
+      String role = scanner.nextLine().toUpperCase();
+      if (!role.isEmpty() && (role.equals("ADMIN") || role.equals("MEMBER"))) {
+        user.setRole(User.Role.valueOf(role));
+      }
+
+      userOps.updateUser(user);
+    } catch (Exception e) {
+      System.out.println(Format.colorString("Invalid id or operation failed", Color.ANSI_HIGH_INTENSITY_RED));
     }
-    user.setName(name);
-
-    System.out.print("Enter username:");
-    String username = scanner.nextLine();
-    while (username.isEmpty()) {
-      System.out.println("Username cannot be empty. Please enter again:");
-      username = scanner.nextLine();
-    }
-    user.setUsername(username);
-
-    System.out.print("Enter password:");
-    String password = scanner.nextLine();
-    while (password.isEmpty()) {
-      System.out.println("Password cannot be empty. Please enter again:");
-      password = scanner.nextLine();
-    }
-    user.setPassword(password);
-
-    System.out.print("Enter role (ADMIN or MEMBER):");
-    String role = scanner.nextLine().toUpperCase();
-    while (!role.equals("ADMIN") && !role.equals("MEMBER")) {
-      System.out.println("Role must be either ADMIN or MEMBER. Please enter again:");
-      role = scanner.nextLine().toUpperCase();
-    }
-    user.setRole(User.Role.valueOf(role));
-
-    userOps.updateUser(user);
   }
 
   public void deleteUser() {
+    displayAllUsers();
     // Delete user from the database
-    System.out.print("Enter user id to delete:");
-    int id = scanner.nextInt();
-    userOps.deleteUser(id);
+    System.out.print(Format.colorString("Enter user id to delete: ", Color.ANSI_HIGH_INTENSITY_BLACK));
+    try {
+      int id = scanner.nextInt();
+      userOps.deleteUser(id);
+    } catch (Exception e) {
+      System.out.println(Format.colorString("Invalid id or operation failed", Color.ANSI_HIGH_INTENSITY_RED));
+    }
   }
 
   public void searchUser() {
     // Search user in the database
-    System.out.print("Search User:");
+    System.out.print(Format.colorString("Enter your username: ", Color.ANSI_HIGH_INTENSITY_BLACK));
     String search = scanner.nextLine();
     ArrayList<User> users = userOps.search(search);
     displayUsers(users);

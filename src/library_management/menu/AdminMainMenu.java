@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 import library_management.book.menu.admin.AdminBookMenu;
+import library_management.format.Color;
+import library_management.format.Format;
 import library_management.user.User;
 import library_management.user.menu.admin.AdminManageUserMenu;
 
@@ -16,7 +18,7 @@ public class AdminMainMenu {
     if (user == null) {
       throw new IllegalArgumentException("You are unauthenticated");
     }
-    if(user.getRole() != User.Role.ADMIN) {
+    if (user.getRole() != User.Role.ADMIN) {
       throw new IllegalArgumentException("You are not authorized to access admin menu");
     }
     scanner = new Scanner(System.in);
@@ -25,20 +27,21 @@ public class AdminMainMenu {
   }
 
   public void displayMainMenu() {
-    System.out.println("----------------------------------------------------");
-    System.out.println("1. Book Menu");
-    System.out.println("2. User Menu");
-    System.out.println("3. Exit");
-    System.out.println("----------------------------------------------------");
+    String[] options = { "Book Menu", "User Menu", "Exit" };
+    Format.displayMenu("Admin Menu", options);
   }
 
   public void processMenu() {
     int choice;
     do {
       displayMainMenu();
-      System.out.print("Enter your choice:");
-      choice = scanner.nextInt();
-      scanner.nextLine();
+      System.out.print(Format.colorString("Enter your choice: ", Color.ANSI_BOLD_HIGH_INTENSITY_CYAN));
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (Exception e) {
+        choice = -1;
+      }
+
       switch (choice) {
         case 1:
           bookMenu.processMenu();
@@ -47,10 +50,10 @@ public class AdminMainMenu {
           userMenu.processMenu();
           break;
         case 3:
-          System.out.println("Exiting...");
+          Format.exitWithAnimate("Back to main menu");
           break;
         default:
-          System.out.println("Invalid choice");
+          System.out.println(Format.colorString("Invalid choice", Color.ANSI_HIGH_INTENSITY_RED));
       }
     } while (choice != 3);
   }

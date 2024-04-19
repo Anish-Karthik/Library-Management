@@ -1,6 +1,6 @@
 package library_management.book;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 
 public class Book {
 	private int id;
@@ -94,5 +94,14 @@ public class Book {
 
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public static String[] getHeaders() {
+		return new String[] { "ID", "ISBN", "Title", "Copies", "Available Copies", "Author", "Publisher", "Location" };
+	}
+
+	public String[] getData() {
+		return new String[] { String.valueOf(id), isbn, title, String.valueOf(copies), String.valueOf(availableCopies),
+				author, publisher, location };
 	}
 }

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 import library_management.book.menu.member.MemberBookMenu;
+import library_management.format.Color;
+import library_management.format.Format;
 import library_management.user.User;
 
 public class MemberMainMenu {
@@ -22,28 +24,31 @@ public class MemberMainMenu {
   }
 
   public void displayMainMenu() {
-    System.out.println("----------------------------------------------------");
-    System.out.println("1. Book Menu");
-    System.out.println("2. Exit");
-    System.out.println("----------------------------------------------------");
+    String[] options = new String[] { "Book Menu", "Exit" };
+    Format.displayMenu("Member Menu", options);
   }
 
   public void processMenu() {
     int choice;
     do {
       displayMainMenu();
-      System.out.print("Enter your choice:");
-      choice = scanner.nextInt();
-      scanner.nextLine();
+      System.out
+          .print(Format.colorString("Enter your choice: ", Color.ANSI_BOLD_HIGH_INTENSITY_CYAN));
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (Exception e) {
+        choice = -1;
+      }
+
       switch (choice) {
         case 1:
           bookMenu.processMenu();
           break;
         case 2:
-          System.out.println("Exiting...");
+          Format.exitWithAnimate("Back to main menu");
           break;
         default:
-          System.out.println("Invalid choice");
+          System.out.println(Format.colorString("Invalid choice", Color.ANSI_HIGH_INTENSITY_RED));
       }
     } while (choice != 2);
   }

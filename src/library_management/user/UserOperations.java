@@ -147,6 +147,28 @@ public class UserOperations {
     return users;
   }
 
+  public User getUser(int id) {
+    PreparedStatement st;
+    try {
+      st = con.prepareStatement("select * from User where id=?");
+      st.setInt(1, id);
+      ResultSet rs = st.executeQuery();
+      if (rs.next()) {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setName(rs.getString("name"));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+        user.setRole(User.Role.valueOf(rs.getString("role")));
+        return user;
+      }
+    } catch (SQLException e) {
+      System.out.println("USER:Error getting user");
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   public ArrayList<User> getUserByRole(User.Role role) {
     PreparedStatement st;
     ArrayList<User> users = new ArrayList<User>();

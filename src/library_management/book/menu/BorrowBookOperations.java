@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import library_management.book.BorrowedBook;
+import library_management.format.Color;
+import library_management.format.Format;
 import library_management.user.User;
 
 public class BorrowBookOperations {
@@ -51,7 +53,7 @@ public class BorrowBookOperations {
           .prepareStatement("UPDATE Book SET available_copies = available_copies - 1 WHERE id = ?");
       reduceAvailableCopies.setInt(1, bookId);
       reduceAvailableCopies.executeUpdate();
-      System.out.println("Book borrowed successfully");
+      System.out.println(Format.colorString("Book borrowed successfully",Color.ANSI_HIGH_INTENSITY_GREEN));
     } catch (Exception e) {
       System.out.println("Error borrowing book: " + e.getMessage());
     }
@@ -73,7 +75,7 @@ public class BorrowBookOperations {
           .prepareStatement("UPDATE Book SET available_copies = available_copies + 1 WHERE id = ?");
       increaseAvailableCopies.setInt(1, bookId);
       increaseAvailableCopies.executeUpdate();
-      System.out.println("Book returned successfully");
+      System.out.println(Format.colorString("Book returned successfully",Color.ANSI_HIGH_INTENSITY_GREEN));
     } catch (Exception e) {
       System.out.println("Error returning book: " + e.getMessage());
     }

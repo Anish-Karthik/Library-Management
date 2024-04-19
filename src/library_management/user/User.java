@@ -71,4 +71,14 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public static String[] getHeaders() {
+        String[] headers = { "ID", "Name", "Role", "Username" };
+        return headers;
+    }
+
+    public String[] getData() {
+        String[] data = { String.valueOf(id), name, role.toString(), username };
+        return data;
+    }
 }
